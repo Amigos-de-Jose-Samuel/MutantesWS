@@ -1,0 +1,28 @@
+CREATE DATABASE Mutante;
+
+CREATE TABLE Usuario (
+	id SERIAL Primary Key,
+	login varchar(50),
+	senha varchar(50)
+)
+
+CREATE TABLE Mutante (
+	id SERIAL Primary Key,
+	nome varchar(50),
+	foto BYTEA,
+	idUsuairo int,
+	CONSTRAINT fk_usuario FOREIGN KEY(idUsuairo) REFERENCES Usuario(id)
+)
+
+CREATE TABLE Habilidade (
+	id SERIAL Primary Key,
+	descricao varchar(50),
+)
+
+CREATE TABLE MutanteHabilidade (
+	id SERIAL Primary Key,
+	idMutante int,
+	idHabilidade int,
+	CONSTRAINT fk_mutante FOREIGN KEY(idMutante) REFERENCES Mutante(id),
+	CONSTRAINT fk_habilidade FOREIGN KEY(idHabilidade) REFERENCES Habilidade(id)
+)
