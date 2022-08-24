@@ -9,6 +9,8 @@ import br.net.android.mutante.controller.Controller;
 import br.net.android.mutante.model.Habilidade;
 import br.net.android.mutante.model.Mutante;
 import br.net.android.mutante.model.Usuario;
+import br.net.android.mutante.model.request.EditaMutanteRequest;
+import br.net.android.mutante.model.request.NovoMutanteRequest;
 import br.net.android.mutante.model.response.DashboardResponse;
 import br.net.android.mutante.model.response.DetalhesMutanteResponse;
 import br.net.android.mutante.model.response.EditaMutanteResponse;
@@ -50,9 +52,9 @@ public class MutanteREST {
 	}
 	
 	@PostMapping("/novo-mutante")
-	public NovoMutanteResponse novoMutante(@RequestBody Mutante mutante, @RequestBody ArrayList<Habilidade> habilidades) {
+	public NovoMutanteResponse novoMutante(@RequestBody NovoMutanteRequest mutante) {
 		try {
-			return Controller.cadastraMutante(mutante, habilidades);
+			return Controller.cadastraMutante(mutante.getMutante(), mutante.getHabilidades());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new NovoMutanteResponse(false, "Houve um erro no cadastro do Mutante.");
@@ -90,9 +92,9 @@ public class MutanteREST {
 	}
 	
 	@PutMapping("/editar")
-	public EditaMutanteResponse editaMutante(@RequestBody Mutante mutante, @RequestBody ArrayList<Habilidade> habilidades) {
+	public EditaMutanteResponse editaMutante(@RequestBody EditaMutanteRequest mutante) {
 		try {
-			return Controller.editaMutante(mutante, habilidades);
+			return Controller.editaMutante(mutante.getMutante(), mutante.getHabilidades());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new EditaMutanteResponse(false, "Houve um erro ao atualizar o mutante.");

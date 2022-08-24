@@ -16,7 +16,7 @@ CREATE TABLE Mutante (
 
 CREATE TABLE Habilidade (
 	id SERIAL Primary Key,
-	descricao varchar(50),
+	descricao varchar(50)
 )
 
 CREATE TABLE MutanteHabilidade (
@@ -26,3 +26,96 @@ CREATE TABLE MutanteHabilidade (
 	CONSTRAINT fk_mutante FOREIGN KEY(idMutante) REFERENCES Mutante(id),
 	CONSTRAINT fk_habilidade FOREIGN KEY(idHabilidade) REFERENCES Habilidade(id)
 )
+
+
+--INSERT PREVIO DE 3 USUARIOS
+insert into usuario (login, senha)
+values ('galileu', '123')
+
+insert into usuario (login, senha)
+values ('fernando', '123')
+
+insert into usuario (login, senha)
+values ('leonardo', '123')
+
+//json para o cadastro dos mutantes
+{
+    "mutante": {
+        "nome": "Ciclope",
+        "foto": null,
+        "loginUsuarioCadastro": "galileu"
+    },
+    "habilidades": ["Estrategista", "Piloto", "Raio Lazer"]
+}
+
+{
+    "mutante": {
+        "nome": "Deadpool",
+        "foto": null,
+        "loginUsuarioCadastro": "galileu"
+    },
+    "habilidades": ["Regeneração", "Forca"]
+}
+
+{
+    "mutante": {
+        "nome": "Faisca",
+        "foto": null,
+        "loginUsuarioCadastro": "galileu"
+    },
+    "habilidades": ["Eletrecidade", "Relampagos"]
+}
+
+{
+    "mutante": {
+        "nome": "Jean Grey",
+        "foto": null,
+        "loginUsuarioCadastro": "fernando"
+    },
+    "habilidades": ["Empatia", "Telepatia", "Força Fênix"]
+}
+
+{
+    "mutante": {
+        "nome": "Magneto",
+        "foto": null,
+        "loginUsuarioCadastro": "fernando"
+    },
+    "habilidades": ["Magnetismo", "Gravidade"]
+}
+
+{
+    "mutante": {
+        "nome": "Wolverine",
+        "foto": null,
+        "loginUsuarioCadastro": "fernando"
+    },
+    "habilidades": ["Cicatrização", "Garras", "Sentidos"]
+}
+
+{
+    "mutante": {
+        "nome": "Professor Charles Xavier",
+        "foto": null,
+        "loginUsuarioCadastro": "leonardo"
+    },
+    "habilidades": ["Telepatia", "Inteligencia"]
+}
+
+{
+    "mutante": {
+        "nome": "Noturno",
+        "foto": null,
+        "loginUsuarioCadastro": "leonardo"
+    },
+    "habilidades": ["Teletransporte", "Agilidade", "Visão Noturna"]
+}
+
+{
+    "mutante": {
+        "nome": "Pigmeu",
+        "foto": null,
+        "loginUsuarioCadastro": "leonardo"
+    },
+    "habilidades": ["Força", "Regener", "Cicatrização"]
+}

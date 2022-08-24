@@ -8,7 +8,7 @@ public class ConnectionFactory implements AutoCloseable {
 	private static String DRIVER = "org.postgresql.Driver";
     private static String URL = "jdbc:postgresql://localhost:5432/postgres";
     private static String LOGIN = "postgres";
-    private static String SENHA = "1234";
+    private static String SENHA = "123456";
     
     private static Connection con = null;
     

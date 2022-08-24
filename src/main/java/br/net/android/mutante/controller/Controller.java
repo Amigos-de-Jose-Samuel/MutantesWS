@@ -78,10 +78,10 @@ public class Controller {
 		if(habilidades == null)
 			return new DashboardResponse(false, "Houve um erro na consulta de habilidades.");
 		
-		return new DashboardResponse(true, "", quantidadeMutantes, habilidades);
+		return new DashboardResponse(true, "Dados obtidos com sucesso.", quantidadeMutantes, habilidades);
 	}
 	
-	public static NovoMutanteResponse cadastraMutante(Mutante mutante, ArrayList<Habilidade> habilidades) throws Exception {
+	public static NovoMutanteResponse cadastraMutante(Mutante mutante, ArrayList<String> habilidades) throws Exception {
 		int count = getMutanteDAO().mutanteExiste(mutante.getNome());
 		
 		if(count > 0)
@@ -89,17 +89,31 @@ public class Controller {
 		else if(count == -1)
 			return new NovoMutanteResponse(false, "Houve um erro na validação do mutante.");
 		
+		int idUsuario = getUsuarioDAO().obtemIdPorLogin(mutante.getLoginUsuarioCadastro());
+		
+		if(idUsuario == -1)
+			return new NovoMutanteResponse(false, "Usuario indicado não existe.");
+		
+		mutante.setIdUsuario(idUsuario);
+		
 		int idMutante = getMutanteDAO().insereMutante(mutante);
 		
 		if(idMutante == -1)
 			return new NovoMutanteResponse(false, "Houve um erro ao inserir o mutante.");
 		
-		for(Habilidade habilidade : habilidades) {
-			boolean sucesso = getMutanteHabilidadeDAO().insereMutanteHabilidade(mutante.getId(), habilidade.getId());
+		mutante.setId(idMutante);
+		
+		for(String habilidade : habilidades) {
+			int idHabilidade = getHabilidadeDAO().insereBuscaHabilidade(habilidade);
+			
+			if(idHabilidade == -1)
+				return new NovoMutanteResponse(false, "Houve um erro no cadastro da habilidade.");
+			
+			boolean sucesso = getMutanteHabilidadeDAO().insereMutanteHabilidade(mutante.getId(), idHabilidade);
 			if (!sucesso) {
 				getMutanteHabilidadeDAO().deletaHabilidadesMutante(idMutante);
 				getMutanteDAO().deletaMutante(idMutante);
-				return new NovoMutanteResponse(false, "Houve um erro no cadastro das habilidades do mutante.");
+				return new NovoMutanteResponse(false, "Houve um erro no cadastro das habilidades do mutante." + idHabilidade);
 			}
 		}
 		
@@ -149,7 +163,7 @@ public class Controller {
 		return new RemoveMutanteResponse(true, "Mutante removido com sucesso.");
 	}
 	
-	public static EditaMutanteResponse editaMutante(Mutante mutante,  ArrayList<Habilidade> habilidades) throws Exception {
+	public static EditaMutanteResponse editaMutante(Mutante mutante,  ArrayList<String> habilidades) throws Exception {
 		int count = getMutanteDAO().mutanteExiste(mutante.getId());
 		
 		if(count == 0)
@@ -161,8 +175,13 @@ public class Controller {
 		
 		getMutanteHabilidadeDAO().deletaHabilidadesMutante(mutante.getId());
 		
-		for(Habilidade habilidade : habilidades) {
-			getMutanteHabilidadeDAO().insereMutanteHabilidade(mutante.getId(), habilidade.getId());
+		for(String habilidade : habilidades) {
+			int idHabilidade = getHabilidadeDAO().insereBuscaHabilidade(habilidade);
+			
+			if(idHabilidade == -1)
+				return new EditaMutanteResponse(false, "Houve um erro no cadastro da habilidade.");
+			
+			getMutanteHabilidadeDAO().insereMutanteHabilidade(mutante.getId(), idHabilidade);
 		}
 		
 		return new EditaMutanteResponse(true, "Mutante editado com sucesso.");

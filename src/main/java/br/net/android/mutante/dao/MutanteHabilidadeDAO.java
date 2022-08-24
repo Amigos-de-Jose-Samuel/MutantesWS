@@ -37,22 +37,26 @@ public class MutanteHabilidadeDAO {
     public ArrayList<HabilidadeQuantidadeModel> obtemHabilidadesMaisUsadas() {
     	ArrayList<HabilidadeQuantidadeModel> habilidades = new ArrayList<HabilidadeQuantidadeModel>();
     	
-    	String sql = "";
+    	String sql = "select count(mh.idhabilidade), h.descricao "
+    			   + "from mutantehabilidade mh "
+    			   + "inner join habilidade h on (h.id = mh.idhabilidade) "
+    			   + "group by mh.idhabilidade, h.descricao " 
+    			   + "order by count(mh.idhabilidade) desc, h.descricao "
+    			   + "limit 3";
     	
     	try(PreparedStatement st = con.prepareStatement(sql)){
 			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
-				String habilidade = rs.getString(1);
-				int quantidede = rs.getInt(2);
+				int quantidede = rs.getInt(1);
+				String habilidade = rs.getString(2);
 				habilidades.add(new HabilidadeQuantidadeModel(habilidade, quantidede));
 			};
-			
+
+	    	return habilidades;
 		} catch (Exception ex) {
 			return null;
 		}
-    	
-    	return habilidades;
     }
     
     public boolean deletaHabilidadesMutante(int idMutante) {

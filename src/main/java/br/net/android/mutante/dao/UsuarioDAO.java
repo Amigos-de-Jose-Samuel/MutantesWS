@@ -25,12 +25,36 @@ public class UsuarioDAO {
 		
 		try(PreparedStatement st = con.prepareStatement(sql)){
 			
+			st.setString(1, usuario.getLogin());
+			st.setString(2, usuario.getSenha());
+			
 			ResultSet rs = st.executeQuery();
 			rs.next();
 				
 			int count = rs.getInt(1);
 			
 			return count;
+			
+		} catch (Exception ex) {
+			return -1;
+		}
+	}
+	
+	public int obtemIdPorLogin(String login) {
+		String sql = "SELECT id "
+				+ "FROM Usuario "
+				+ "WHERE Login = ? ";
+		
+		try(PreparedStatement st = con.prepareStatement(sql)){
+			
+			st.setString(1, login);
+			
+			ResultSet rs = st.executeQuery();
+			rs.next();
+				
+			int id = rs.getInt(1);
+			
+			return id;
 			
 		} catch (Exception ex) {
 			return -1;

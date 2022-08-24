@@ -79,19 +79,19 @@ public class MutanteDAO {
     }
     
     public int insereMutante(Mutante mutante) {
-    	String sql = "";
+    	
+    	String sql = "INSERT INTO Mutante(nome, foto, idusuario) values(?, ? ,?) returning id";
     	
     	try(PreparedStatement st = con.prepareStatement(sql)){
 			
-			//st.setString(1, nome);
+			st.setString(1, mutante.getNome());
+			st.setBytes(2, mutante.getFoto());
+			st.setInt(3, mutante.getIdUsuario());
 			
 			ResultSet rs = st.executeQuery();
 			rs.next();
-				
-			//int count = rs.getInt(1);
 			
-			//return count;
-			return 1;
+			return rs.getInt(1);
 			
 		} catch (Exception ex) {
 			return -1;
@@ -99,15 +99,12 @@ public class MutanteDAO {
     }
     
     public boolean deletaMutante(int idMutante) {
-		String sql = "DELETE Mutante WHERE id = ?";
+		String sql = "DELETE FROM Mutante WHERE id = ?";
     	
     	try(PreparedStatement st = con.prepareStatement(sql)){
-			
 			st.setInt(1, idMutante);
 			
-			ResultSet rs = st.executeQuery();
-			rs.next();
-			
+			st.executeUpdate();
 			return true;
 			
 		} catch (Exception ex) {
@@ -141,8 +138,8 @@ public class MutanteDAO {
     public Mutante obtemMutante(int idMutante) {
 		Mutante mutante = null;
     	
-    	String sql = "SELECT m.id, m.nome, m.foto, u.login"
-    			   + "FROM Mutante m"
+    	String sql = "SELECT m.id, m.nome, m.foto, u.login "
+    			   + "FROM Mutante m "
     			   + "INNER JOIN Usuario u ON (u.id = m.idUsuario) "
     			   + "WHERE m.id = ? "
     			   + "ORDER BY nome;";
@@ -174,10 +171,11 @@ public class MutanteDAO {
     			+ "INNER JOIN Usuario u ON (u.id = m.idUsuario) "
     			+ "INNER JOIN MutanteHabilidade mh ON (mh.idmutante = m.id) "
     			+ "INNER JOIN Habilidade h ON (h.id = mh.idhabilidade) "
-    			+ "WHERE h.descricao LIKE CONCAT( '%',?,'%')";
+    			+ "WHERE lower(h.descricao) LIKE ? "
+    			+ "group by m.id, m.nome";
     	
     	try(PreparedStatement st = con.prepareStatement(sql)) {
-    		st.setString(1, habilidade);
+    		st.setString(1, "%"+ habilidade.toLowerCase() + "%");
     		ResultSet rs = st.executeQuery();
 	   		 
 	   		while(rs.next()) {
